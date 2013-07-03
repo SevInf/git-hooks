@@ -103,7 +103,7 @@ function install_hooks
         for file in applypatch-msg commit-msg post-applypatch post-checkout post-commit post-merge post-receive pre-applypatch pre-auto-gc pre-commit prepare-commit-msg pre-rebase pre-receive update
         do
             echo '#!/bin/bash
-git-hooks run "$0" "$@"' > "${file}"
+./node_modules/.bin/git-hooks run "$0" "$@"' > "${file}"
             chmod +x "${file}"
         done
     else
