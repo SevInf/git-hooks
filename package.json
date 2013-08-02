@@ -1,8 +1,12 @@
 {
     "name": "git-hooks",
     "description": "A tool to manage project, user, and global Git hooks for multiple git repositories.",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "bin": {
         "git-hooks": "./bin/git-hooks"
+    },
+    "scripts": {
+        "postinstall": "./../../node_modules/.bin/git-hooks --install",
+        "preuninstall": "./../../node_modules/.bin/git-hooks --uninstall"
     }
 }
