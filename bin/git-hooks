@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2010-2012, Benjamin C. Meyer <ben@meyerhome.net>
+# Copyright (c) 2010-2013, Benjamin C. Meyer <ben@meyerhome.net>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -43,7 +43,9 @@ function hook_dirs
 
 function list_hooks_in_dir
 {
-    find -L "${1}/" -perm +111 -type f 2>/dev/null | grep -v "^.$" | sort
+    path="${1}"
+    level="${2}"
+    find -L "${path}/" -mindepth ${level} -maxdepth ${level} -perm +111 -type f 2>/dev/null | grep -v "^.$" | sort
 }
 
 function run_hooks
@@ -54,7 +56,7 @@ function run_hooks
         return 1
     fi
     shift 1
-    for hook in `list_hooks_in_dir "${dir}"`
+    for hook in `list_hooks_in_dir "${dir}" 1`
     do
         export last_run_hook="${hook} $@"
         if [ ! -z ${GIT_HOOKS_VERBOSE} ] ; then
@@ -100,7 +102,7 @@ function install_hooks
         mv hooks hooks.old
         mkdir hooks
         cd hooks
-        for file in applypatch-msg commit-msg post-applypatch post-checkout post-commit post-merge post-receive pre-applypatch pre-auto-gc pre-commit prepare-commit-msg pre-rebase pre-receive update
+        for file in applypatch-msg commit-msg post-applypatch post-checkout post-commit post-merge post-receive pre-applypatch pre-auto-gc pre-commit prepare-commit-msg pre-rebase pre-receive update pre-push
         do
             echo '#!/usr/bin/env bash
 ./node_modules/.bin/git-hooks run "$0" "$@"' > "${file}"
@@ -132,7 +134,7 @@ function list_hooks
     echo '---'
     for dir in `hook_dirs`; do
         echo "${dir}:"
-        for hook in `list_hooks_in_dir "${dir}"` ; do
+        for hook in `list_hooks_in_dir "${dir}" 2` ; do
             echo -n `basename \`dirname "${hook}"\``
             echo -e "/`basename "${hook}"` \t- `${hook} --about`"
         done
