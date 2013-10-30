@@ -96,8 +96,8 @@ function install_hooks
     cd $GITDIR
     if [ "${1}" = "--install" ] ; then
         if [ -d hooks.old ] ; then
-            echo "hooks.old already exists, perhaps you already installed?"
-            return 1
+            echo "git hooks already installed"
+            return 0
         fi
         mv hooks hooks.old
         mkdir hooks
